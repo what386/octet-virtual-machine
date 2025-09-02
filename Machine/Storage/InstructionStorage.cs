@@ -23,7 +23,7 @@ public class InstructionStorage
 
     public ushort ReadInstruction(int address)
     {
-        if (address is < 0 or > memSize - 1)
+        if (address is < 0 or >= memSize)
             throw new ArgumentException();
 
         int selectedPage = address / cacheSize;
@@ -37,7 +37,7 @@ public class InstructionStorage
 
     public void FlashMemory(ushort[] data)
     {
-        if (data.Length != memSize - 1)
+        if (data.Length != memSize)
             throw new ArgumentException();
 
         memory.Flash(data);

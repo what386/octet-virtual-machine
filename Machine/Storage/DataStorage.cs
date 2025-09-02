@@ -38,7 +38,7 @@ public class DataStorage
 
     public void WriteMemory(int address, byte data)
     {
-        if (address is < 0 or > memSize - 1)
+        if (address is < 0 or >= memSize)
             throw new ArgumentException();
 
         int selectedPage = address / cacheSize;
