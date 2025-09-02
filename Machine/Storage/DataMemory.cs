@@ -9,6 +9,10 @@ public class DataMemory
     private int blockSize;
     private byte[] memory;
 
+    // RAM should only ever be accessed by the cache
+    // so you can only directly interact with memory
+    // through transfers of entire block-size chunks
+
     public DataMemory(int size, int blockSize)
     {
         this.size = size;
