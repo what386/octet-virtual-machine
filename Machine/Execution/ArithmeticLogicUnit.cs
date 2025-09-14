@@ -105,7 +105,7 @@ public static class ArithmeticLogicUnit
         return byteResult;
     }
 
-    public static byte Decrememt(byte a)
+    public static byte Decrement(byte a)
     {
         int result = a - 1;
         byte byteResult = (byte)result;

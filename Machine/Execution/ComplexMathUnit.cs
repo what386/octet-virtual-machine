@@ -2,10 +2,8 @@ namespace Machine.Execution;
 
 public static class ComplexMathUnit
 {
-    // Reference to ALU for flag operations
     private static void UpdateFlags(byte result, bool carry = false, bool overflow = false)
     {
-        // Complex math operations typically don't affect aux carry
         ArithmeticLogicUnit.UpdateFlagsExternal(result, carry, false, overflow);
     }
 
@@ -181,33 +179,7 @@ public static class ComplexMathUnit
         return count;
     }
 
-    // Alternative POPCNT implementation using lookup table (faster for repeated calls)
-    private static readonly byte[] PopCountTable = new byte[256];
-    
-    static ComplexMathUnit()
-    {
-        // Initialize population count lookup table
-        for (int i = 0; i < 256; i++)
-        {
-            int count = 0;
-            int value = i;
-            while (value != 0)
-            {
-                count++;
-                value &= value - 1;
-            }
-            PopCountTable[i] = (byte)count;
-        }
-    }
-
-    public static byte CountOnesFast(byte value)
-    {
-        byte count = PopCountTable[value];
-        UpdateFlags(count, false, false);
-        return count;
-    }
-
-    // Additional utility operations
+    // Additional operations
 
     public static byte FindFirstSet(byte value)
     {
@@ -228,7 +200,7 @@ public static class ComplexMathUnit
             position++;
         }
 
-        // Should never reach here, but just in case
+        // Should never reach here
         UpdateFlags(0, true, false);
         return 0;
     }
@@ -252,89 +224,9 @@ public static class ComplexMathUnit
             position--;
         }
 
-        // Should never reach here, but just in case
+        // Should never reach here
         UpdateFlags(0, true, false);
         return 0;
-    }
-
-    public static byte ReverseBits(byte value)
-    {
-        byte result = 0;
-        for (int i = 0; i < 8; i++)
-        {
-            if ((value & (1 << i)) != 0)
-            {
-                result |= (byte)(1 << (7 - i));
-            }
-        }
-
-        UpdateFlags(result, false, false);
-        return result;
-    }
-
-    public static bool IsPowerOfTwo(byte value)
-    {
-        bool isPower = value != 0 && (value & (value - 1)) == 0;
-        
-        // Update zero flag based on the boolean result
-        UpdateFlags((byte)(isPower ? 1 : 0), false, false);
-        return isPower;
-    }
-
-    // Gray code operations
-    public static byte BinaryToGray(byte binary)
-    {
-        byte gray = (byte)(binary ^ (binary >> 1));
-        UpdateFlags(gray, false, false);
-        return gray;
-    }
-
-    public static byte GrayToBinary(byte gray)
-    {
-        byte binary = gray;
-        while (gray != 0)
-        {
-            gray >>= 1;
-            binary ^= gray;
-        }
-        
-        UpdateFlags(binary, false, false);
-        return binary;
-    }
-
-    // Absolute value and sign operations
-    public static byte AbsoluteValue(byte value)
-    {
-        // For signed interpretation of byte
-        if ((value & 0x80) != 0)  // Negative in two's complement
-        {
-            // Two's complement negation: invert bits and add 1
-            byte result = (byte)((~value) + 1);
-            
-            // Set overflow if we can't represent the absolute value (i.e., -128)
-            bool overflow = value == 0x80;  // -128 in two's complement
-            
-            UpdateFlags(result, false, overflow);
-            return result;
-        }
-        else
-        {
-            UpdateFlags(value, false, false);
-            return value;
-        }
-    }
-
-    public static byte Negate(byte value)
-    {
-        // Two's complement negation
-        byte result = (byte)((~value) + 1);
-        
-        // Set overflow if negating -128 (0x80)
-        bool overflow = value == 0x80;
-        bool carry = value != 0;  // Carry set unless negating zero
-        
-        UpdateFlags(result, carry, overflow);
-        return result;
     }
 }
 
