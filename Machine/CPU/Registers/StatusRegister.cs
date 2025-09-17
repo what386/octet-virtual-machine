@@ -1,6 +1,6 @@
 namespace Machine.CPU.Registers;
 
-public static class StatusFlags
+public static class StatusRegister
 {
     // Flag register (8 bits)
     public static byte Flags { get; private set; }

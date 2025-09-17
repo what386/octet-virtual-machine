@@ -2,7 +2,7 @@ using System;
 
 namespace Machine.Memory.Storage;
 
-public class DataStorage
+public class VideoStorage
 
 {
     private int size;
@@ -13,7 +13,7 @@ public class DataStorage
     // so you can only directly interact with memory
     // through transfers of entire block-size chunks
 
-    public DataStorage(int size, int blockSize)
+    public VideoStorage(int size, int blockSize)
     {
         this.size = size;
         this.blockSize = blockSize;
