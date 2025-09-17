@@ -1,9 +1,9 @@
-namespace Machine.CPU.Registers;
+namespace Machine.Processor.Registers;
 
-public static class StatusRegister
+public class StatusRegister
 {
     // Flag register (8 bits)
-    public static byte Flags { get; private set; }
+    public byte Flags { get; private set; }
 
     // Bits 1 and 3 are reserved
     public const byte CARRY_FLAG = 0x01;      // Bit 0 - Carry flag
@@ -16,16 +16,16 @@ public static class StatusRegister
     public const byte SIGN_FLAG = 0x80;       // Bit 7 - Sign flag
 
     // Flag access properties
-    public static bool CarryFlag => (Flags & CARRY_FLAG) != 0;
-    public static bool ParityFlag => (Flags & PARITY_FLAG) != 0;
-    public static bool AuxCarryFlag => (Flags & AUX_CARRY_FLAG) != 0;
-    public static bool OverflowFlag => (Flags & OVERFLOW_FLAG) != 0;
-    public static bool ZeroFlag => (Flags & ZERO_FLAG) != 0;
-    public static bool SignFlag => (Flags & SIGN_FLAG) != 0;
+    public bool CarryFlag => (Flags & CARRY_FLAG) != 0;
+    public bool ParityFlag => (Flags & PARITY_FLAG) != 0;
+    public bool AuxCarryFlag => (Flags & AUX_CARRY_FLAG) != 0;
+    public bool OverflowFlag => (Flags & OVERFLOW_FLAG) != 0;
+    public bool ZeroFlag => (Flags & ZERO_FLAG) != 0;
+    public bool SignFlag => (Flags & SIGN_FLAG) != 0;
 
-    public static void ClearFlags() => Flags = 0;
+    public void ClearFlags() => Flags = 0;
 
-    private static void SetFlag(byte flagMask, bool value)
+    private void SetFlag(byte flagMask, bool value)
     {
         if (value)
             Flags |= flagMask;
@@ -34,7 +34,7 @@ public static class StatusRegister
     }
 
     // Calculate parity (even parity = true)
-    public static bool CalculateParity(byte value)
+    public bool CalculateParity(byte value)
     {
         int count = 0;
         for (int i = 0; i < 8; i++)
@@ -46,7 +46,7 @@ public static class StatusRegister
     }
 
     // Update flags based on result
-    public static void UpdateFlags(byte result, bool carry = false, bool auxCarry = false, bool overflow = false)
+    public void UpdateFlags(byte result, bool carry = false, bool auxCarry = false, bool overflow = false)
     {
         SetFlag(ZERO_FLAG, result == 0);
         SetFlag(SIGN_FLAG, (result & 0x80) != 0);  // Check bit 7 for sign

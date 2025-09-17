@@ -1,4 +1,4 @@
-namespace Machine.Pipeline;
+namespace Machine.System.Pipeline;
 
 public class PipelineProcessor
 {

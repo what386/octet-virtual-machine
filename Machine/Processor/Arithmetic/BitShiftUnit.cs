@@ -1,19 +1,27 @@
-using Machine.CPU.Core;
+using Machine.Processor.Registers;
 
 using System;
 
-namespace Machine.CPU.Arithmetic;
+namespace Machine.Processor.Arithmetic;
 
-public static class BitShiftUnit
+public class BitShiftUnit
 {
-    private static void UpdateFlags(byte result, bool carry)
+    private StatusRegister flagsRegister;
+
+    public BitShiftUnit(StatusRegister flagRegister)
     {
-        StatusFlags.UpdateFlags(result, carry, false, false);
+        this.flagsRegister = flagRegister;
+    }
+
+    private void UpdateFlags(byte result, bool carry)
+    {
+        // both aux carry and overflow are undefined
+        flagsRegister.UpdateFlags(result, carry, false, false);
     }
 
     // Left shift operations
 
-    public static byte ShiftLeft(byte value, int positions)
+    public byte ShiftLeftLogical(byte value, byte positions)
     {
         if (positions < 0 || positions > 7)
             throw new ArgumentOutOfRangeException(nameof(positions), "Shift positions must be between 0 and 7");
@@ -21,7 +29,7 @@ public static class BitShiftUnit
         if (positions == 0)
         {
             // No shift, but still update flags
-            UpdateFlags(value, StatusFlags.CarryFlag);
+            UpdateFlags(value, flagsRegister.CarryFlag);
             return value;
         }
 
@@ -38,15 +46,9 @@ public static class BitShiftUnit
         return result;
     }
 
-    public static byte ShiftLeftLogical(byte value, int positions)
-    {
-        // Same as ShiftLeft for byte operations
-        return ShiftLeft(value, positions);
-    }
-
     // Right shift operations
 
-    public static byte ShiftRightLogical(byte value, int positions)
+    public byte ShiftRightLogical(byte value, byte positions)
     {
         if (positions < 0 || positions > 7)
             throw new ArgumentOutOfRangeException(nameof(positions), "Shift positions must be between 0 and 7");
@@ -54,7 +56,7 @@ public static class BitShiftUnit
         if (positions == 0)
         {
             // No shift, but still update flags
-            UpdateFlags(value, StatusFlags.CarryFlag);
+            UpdateFlags(value, flagsRegister.CarryFlag);
             return value;
         }
 
@@ -71,7 +73,7 @@ public static class BitShiftUnit
         return result;
     }
 
-    public static byte ShiftRightArithmetic(byte value, int positions)
+    public byte ShiftRightArithmetic(byte value, byte positions)
     {
         if (positions < 0 || positions > 7)
             throw new ArgumentOutOfRangeException(nameof(positions), "Shift positions must be between 0 and 7");
@@ -79,7 +81,7 @@ public static class BitShiftUnit
         if (positions == 0)
         {
             // No shift, but still update flags
-            UpdateFlags(value, StatusFlags.CarryFlag);
+            UpdateFlags(value, flagsRegister.CarryFlag);
             return value;
         }
 
@@ -101,7 +103,7 @@ public static class BitShiftUnit
 
     // Rotate operations
 
-    public static byte RotateLeft(byte value, int positions)
+    public byte RotateLeft(byte value, byte positions)
     {
         if (positions < 0 || positions > 7)
             throw new ArgumentOutOfRangeException(nameof(positions), "Rotate positions must be between 0 and 7");
@@ -109,12 +111,9 @@ public static class BitShiftUnit
         if (positions == 0)
         {
             // No rotation, but still update flags
-            UpdateFlags(value, StatusFlags.CarryFlag);
+            UpdateFlags(value, flagsRegister.CarryFlag);
             return value;
         }
-
-        // Normalize positions to 0-7 range (8 positions = no change)
-        positions = positions % 8;
         
         byte result = (byte)((value << positions) | (value >> (8 - positions)));
         
@@ -125,7 +124,7 @@ public static class BitShiftUnit
         return result;
     }
 
-    public static byte RotateRight(byte value, int positions)
+    public byte RotateRight(byte value, byte positions)
     {
         if (positions < 0 || positions > 7)
             throw new ArgumentOutOfRangeException(nameof(positions), "Rotate positions must be between 0 and 7");
@@ -133,13 +132,10 @@ public static class BitShiftUnit
         if (positions == 0)
         {
             // No rotation, but still update flags
-            UpdateFlags(value, StatusFlags.CarryFlag);
+            UpdateFlags(value, flagsRegister.CarryFlag);
             return value;
         }
 
-        // Normalize positions to 0-7 range (8 positions = no change)
-        positions = positions % 8;
-        
         byte result = (byte)((value >> positions) | (value << (8 - positions)));
         
         // Carry flag gets the last bit that was rotated out (bit 0 of original after positions-1 rotations)
@@ -151,7 +147,7 @@ public static class BitShiftUnit
 
     // Rotate through carry operations (9-bit rotations including carry flag)
 
-    public static byte RotateLeftThroughCarry(byte value, int positions)
+    public byte RotateLeftThroughCarry(byte value, byte positions)
     {
         if (positions < 0 || positions > 7)
             throw new ArgumentOutOfRangeException(nameof(positions), "Rotate positions must be between 0 and 7");
@@ -159,11 +155,11 @@ public static class BitShiftUnit
         if (positions == 0)
         {
             // No rotation, but still update flags
-            UpdateFlags(value, StatusFlags.CarryFlag);
+            UpdateFlags(value, flagsRegister.CarryFlag);
             return value;
         }
 
-        bool carry = StatusFlags.CarryFlag;
+        bool carry = flagsRegister.CarryFlag;
         byte result = value;
 
         for (int i = 0; i < positions; i++)
@@ -177,7 +173,7 @@ public static class BitShiftUnit
         return result;
     }
 
-    public static byte RotateRightThroughCarry(byte value, int positions)
+    public byte RotateRightThroughCarry(byte value, byte positions)
     {
         if (positions < 0 || positions > 7)
             throw new ArgumentOutOfRangeException(nameof(positions), "Rotate positions must be between 0 and 7");
@@ -185,11 +181,11 @@ public static class BitShiftUnit
         if (positions == 0)
         {
             // No rotation, but still update flags
-            UpdateFlags(value, StatusFlags.CarryFlag);
+            UpdateFlags(value, flagsRegister.CarryFlag);
             return value;
         }
 
-        bool carry = StatusFlags.CarryFlag;
+        bool carry = flagsRegister.CarryFlag;
         byte result = value;
 
         for (int i = 0; i < positions; i++)

@@ -1,4 +1,6 @@
-namespace Machine.CPU.Registers;
+namespace Machine.Processor.Registers;
+
+using System;
 
 public class RegisterFile 
 {
@@ -29,4 +31,3 @@ public class RegisterFile
 
     public void Clear() => Array.Clear(registers, 0, size);
 }
-

@@ -1,11 +1,18 @@
-using Machine.CPU.Core;
+using Machine.Processor.Registers;
 
-namespace Machine.CPU.Arithmetic;
+namespace Machine.Processor.Arithmetic;
 
-public static class ArithmeticLogicUnit
+public class ArithmeticLogicUnit
 {
+    private StatusRegister flagRegister;
+
+    public ArithmeticLogicUnit(StatusRegister flagRegister)
+    {
+        this.flagRegister = flagRegister;
+    }
+
     // ---Arithmetic---
-    public static byte Add(byte a, byte b)
+    public byte Add(byte a, byte b)
     {
         int result = a + b;
         byte byteResult = (byte)result;
@@ -16,11 +23,11 @@ public static class ArithmeticLogicUnit
         // Check for signed overflow (two positive numbers yielding negative, or two negative yielding positive)
         bool overflow = ((a & 0x80) == (b & 0x80)) && ((a & 0x80) != (byteResult & 0x80));
         
-        StatusFlags.UpdateFlags(byteResult, carry, auxCarry, overflow);
+        flagRegister.UpdateFlags(byteResult, carry, auxCarry, overflow);
         return byteResult;
     }
 
-    public static byte Sub(byte a, byte b)
+    public byte Sub(byte a, byte b)
     {
         int result = a - b;
         byte byteResult = (byte)result;
@@ -31,11 +38,11 @@ public static class ArithmeticLogicUnit
         // Check for signed overflow
         bool overflow = ((a & 0x80) != (b & 0x80)) && ((a & 0x80) != (byteResult & 0x80));
         
-        StatusFlags.UpdateFlags(byteResult, carry, auxCarry, overflow);
+        flagRegister.UpdateFlags(byteResult, carry, auxCarry, overflow);
         return byteResult;
     }
 
-    public static byte Increment(byte a)
+    public byte Increment(byte a)
     {
         int result = a + 1;
         byte byteResult = (byte)result;
@@ -44,11 +51,11 @@ public static class ArithmeticLogicUnit
         bool overflow = a == 0x7F;  // Incrementing max positive signed value
        
         // Increment does not affect the carry flag
-        StatusFlags.UpdateFlags(byteResult, StatusFlags.CarryFlag, auxCarry, overflow);
+        flagRegister.UpdateFlags(byteResult, flagRegister.CarryFlag, auxCarry, overflow);
         return byteResult;
     }
 
-    public static byte Decrement(byte a)
+    public byte Decrement(byte a)
     {
         int result = a - 1;
         byte byteResult = (byte)result;
@@ -57,50 +64,45 @@ public static class ArithmeticLogicUnit
         bool overflow = a == 0x80;  // Decrementing max negative signed value
         
         // Decrement does not affect the carry flag
-        StatusFlags.UpdateFlags(byteResult, StatusFlags.CarryFlag, auxCarry, overflow);
+        flagRegister.UpdateFlags(byteResult, flagRegister.CarryFlag, auxCarry, overflow);
         return byteResult;
     }
 
-    // Compare operation (subtract without storing result)
-    public static void Compare(byte a, byte b) => Sub(a, b);       
+    // Bitwise operations
+    // Logical operations clear carry, aux carry, and overflow
 
-    // Test operation (AND without storing result)
-    public static void Test(byte a, byte b) => And(a, b);
-
-    // ---Bitwise---
-
-    public static byte And(byte a, byte b)
+    public byte And(byte a, byte b)
     {
         byte result = (byte)(a & b);
-        StatusFlags.UpdateFlags(result, false, false, false);  // AND clears carry, aux carry, and overflow
+        flagRegister.UpdateFlags(result, false, false, false);
         return result;
     }
 
-    public static byte Or(byte a, byte b)
+    public byte Or(byte a, byte b)
     {
         byte result = (byte)(a | b);
-        StatusFlags.UpdateFlags(result, false, false, false);  // OR clears carry, aux carry, and overflow
+        flagRegister.UpdateFlags(result, false, false, false);
         return result;
     }
 
-    public static byte Xor(byte a, byte b)
+    public byte Xor(byte a, byte b)
     {
         byte result = (byte)(a ^ b);
-        StatusFlags.UpdateFlags(result, false, false, false);  // XOR clears carry, aux carry, and overflow
+        flagRegister.UpdateFlags(result, false, false, false);
         return result;
     }
 
-    public static byte Not(byte a)
+    public byte Not(byte a)
     {
         byte result = (byte)~a;
-        StatusFlags.UpdateFlags(result, false, false, false);  // NOT clears carry, aux carry, and overflow
+        flagRegister.UpdateFlags(result, false, false, false);
         return result;
     }
 
-    public static byte Implies(byte a, byte b)
+    public byte Implies(byte a, byte b)
     {
         byte result = (byte)(~a | b);
-        StatusFlags.UpdateFlags(result, false, false, false);  // Logical operation clears carry, aux carry, and overflow
+        flagRegister.UpdateFlags(result, false, false, false);
         return result;
     }
 }
