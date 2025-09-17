@@ -1,10 +1,12 @@
-namespace Machine.Execution;
+using Machine.CPU.Core;
+
+namespace Machine.CPU.Arithmetic;
 
 public static class ComplexMathUnit
 {
     private static void UpdateFlags(byte result, bool carry = false, bool overflow = false)
     {
-        ArithmeticLogicUnit.UpdateFlagsExternal(result, carry, false, overflow);
+        StatusFlags.UpdateFlags(result, carry, false, overflow);
     }
 
     // Multiplication operations

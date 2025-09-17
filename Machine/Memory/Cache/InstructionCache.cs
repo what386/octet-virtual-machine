@@ -1,6 +1,6 @@
 using System;
 
-namespace Machine.Storage;
+namespace Machine.Memory.Cache;
 
 public class InstructionCache
 {

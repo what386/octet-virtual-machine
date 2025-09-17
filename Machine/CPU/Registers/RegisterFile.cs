@@ -1,6 +1,4 @@
-using System;
-
-namespace Machine.Execution;
+namespace Machine.CPU.Registers;
 
 public class RegisterFile 
 {
@@ -10,7 +8,7 @@ public class RegisterFile
     public RegisterFile(int size)
     {
         if (size <= 0)
-            throw new ArgumentOutOfRangeException(nameof(size), "Register file must have a positive size.");
+            throw new System.ArgumentOutOfRangeException(nameof(size), "Register file must have a positive size.");
 
         this.size = size;
         registers = new byte[size];
@@ -18,9 +16,6 @@ public class RegisterFile
 
     public byte Read(int index)
     {
-        if (index == 0) 
-            return 0; // Always 0
-
         return registers[index];
     }
 
@@ -32,11 +27,6 @@ public class RegisterFile
         registers[index] = data;
     }
 
-    public void Clear()
-    {
-        Array.Clear(registers, 0, size);
-        // Ensure register 0 stays zero (redundant, but explicit for clarity)
-        registers[0] = 0;
-    }
+    public void Clear() => Array.Clear(registers, 0, size);
 }
 

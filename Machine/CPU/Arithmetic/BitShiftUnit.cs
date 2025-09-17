@@ -1,12 +1,14 @@
+using Machine.CPU.Core;
+
 using System;
 
-namespace Machine.Execution;
+namespace Machine.CPU.Arithmetic;
 
 public static class BitShiftUnit
 {
     private static void UpdateFlags(byte result, bool carry)
     {
-        ArithmeticLogicUnit.UpdateFlagsExternal(result, carry, false, false);
+        StatusFlags.UpdateFlags(result, carry, false, false);
     }
 
     // Left shift operations
@@ -19,7 +21,7 @@ public static class BitShiftUnit
         if (positions == 0)
         {
             // No shift, but still update flags
-            UpdateFlags(value, ArithmeticLogicUnit.CarryFlag);
+            UpdateFlags(value, StatusFlags.CarryFlag);
             return value;
         }
 
@@ -52,7 +54,7 @@ public static class BitShiftUnit
         if (positions == 0)
         {
             // No shift, but still update flags
-            UpdateFlags(value, ArithmeticLogicUnit.CarryFlag);
+            UpdateFlags(value, StatusFlags.CarryFlag);
             return value;
         }
 
@@ -77,7 +79,7 @@ public static class BitShiftUnit
         if (positions == 0)
         {
             // No shift, but still update flags
-            UpdateFlags(value, ArithmeticLogicUnit.CarryFlag);
+            UpdateFlags(value, StatusFlags.CarryFlag);
             return value;
         }
 
@@ -107,7 +109,7 @@ public static class BitShiftUnit
         if (positions == 0)
         {
             // No rotation, but still update flags
-            UpdateFlags(value, ArithmeticLogicUnit.CarryFlag);
+            UpdateFlags(value, StatusFlags.CarryFlag);
             return value;
         }
 
@@ -131,7 +133,7 @@ public static class BitShiftUnit
         if (positions == 0)
         {
             // No rotation, but still update flags
-            UpdateFlags(value, ArithmeticLogicUnit.CarryFlag);
+            UpdateFlags(value, StatusFlags.CarryFlag);
             return value;
         }
 
@@ -157,11 +159,11 @@ public static class BitShiftUnit
         if (positions == 0)
         {
             // No rotation, but still update flags
-            UpdateFlags(value, ArithmeticLogicUnit.CarryFlag);
+            UpdateFlags(value, StatusFlags.CarryFlag);
             return value;
         }
 
-        bool carry = ArithmeticLogicUnit.CarryFlag;
+        bool carry = StatusFlags.CarryFlag;
         byte result = value;
 
         for (int i = 0; i < positions; i++)
@@ -183,11 +185,11 @@ public static class BitShiftUnit
         if (positions == 0)
         {
             // No rotation, but still update flags
-            UpdateFlags(value, ArithmeticLogicUnit.CarryFlag);
+            UpdateFlags(value, StatusFlags.CarryFlag);
             return value;
         }
 
-        bool carry = ArithmeticLogicUnit.CarryFlag;
+        bool carry = StatusFlags.CarryFlag;
         byte result = value;
 
         for (int i = 0; i < positions; i++)

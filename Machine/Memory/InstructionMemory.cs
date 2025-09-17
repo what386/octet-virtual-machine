@@ -1,8 +1,10 @@
 using System;
+using Machine.Memory.Storage;
+using Machine.Memory.Cache;
 
-namespace Machine.Storage;
+namespace Machine.Memory;
 
-public class InstructionStorage
+public class InstructionMemory 
 {
     const int memSize = 2048;
     const int cacheSize = 32;
@@ -10,7 +12,7 @@ public class InstructionStorage
 
     public int activePage {get; private set;} = 0; 
 
-    InstructionMemory memory = new InstructionMemory(memSize, cacheSize);
+    InstructionStorage memory = new InstructionStorage(memSize, cacheSize);
     InstructionCache cache = new InstructionCache(cacheSize);
 
     public void SwitchPage(int pageNum)

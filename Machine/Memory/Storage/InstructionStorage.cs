@@ -1,15 +1,15 @@
 using System;
 
-namespace Machine.Storage;
+namespace Machine.Memory.Storage;
 
-public class InstructionMemory
+public class InstructionStorage
 
 {
     private readonly int size;
     private readonly int blockSize;
     private ushort[] memory;
 
-    public InstructionMemory(int size, int blockSize)
+    public InstructionStorage(int size, int blockSize)
     {
         this.size = size;
         this.blockSize = blockSize;

@@ -1,8 +1,10 @@
 using System;
+using Machine.Memory.Storage;
+using Machine.Memory.Cache;
 
-namespace Machine.Storage;
+namespace Machine.Memory;
 
-public class DataStorage
+public class DataMemory
 {
     const int memSize = 256;
     const int cacheSize = 64;
@@ -10,7 +12,7 @@ public class DataStorage
 
     public int activePage {get; private set;} = 0; 
 
-    DataMemory memory = new DataMemory(memSize, cacheSize);
+    DataStorage memory = new DataStorage(memSize, cacheSize);
     DataCache cache = new DataCache(cacheSize);
 
     public void SwitchPage(int pageNum)

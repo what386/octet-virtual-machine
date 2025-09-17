@@ -1,8 +1,8 @@
-using System;
+ sing System;
 
-namespace Machine.Storage;
+namespace Machine.Memory.Storage;
 
-public class DataMemory
+public class DataStorage
 
 {
     private int size;
@@ -13,7 +13,7 @@ public class DataMemory
     // so you can only directly interact with memory
     // through transfers of entire block-size chunks
 
-    public DataMemory(int size, int blockSize)
+    public DataStorage(int size, int blockSize)
     {
         this.size = size;
         this.blockSize = blockSize;
