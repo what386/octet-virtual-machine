@@ -1,4 +1,6 @@
-namespace Machine.System.Pipeline;
+using Machine.Control.InstructionDecoder;
+
+namespace Machine.Control.Pipeline;
 
 public class HazardManager
 {
@@ -23,21 +25,20 @@ public class HazardManager
     {
         HandleDataHazards();
         HandleControlHazards();
-        HandleStructuralHazards();
     }
 
     private void HandleDataHazards()
     {
-        if (decode.CurrentInstruction is null || decode.CurrentInstruction.IsNop)
+        if (decode.CurrentInstruction is null || decode.CurrentInstruction.instructionType == InstructionType.Nop)
             return;
 
-        if (execute.CurrentInstruction is { WritesToRegister: true } ex &&
-            decode.CurrentInstruction.UsesRegister(ex.DestinationRegister))
+        if (execute.CurrentInstruction is { writesToRegister: true } ex &&
+            decode.CurrentInstruction.UsesRegister(ex.destinationRegister))
         {
             StallDecode();
         }
-        else if (writeback.CurrentInstruction is { WritesToRegister: true } wb &&
-                 decode.CurrentInstruction.UsesRegister(wb.DestinationRegister))
+        else if (writeback.CurrentInstruction is { writesToRegister: true } wb &&
+                 decode.CurrentInstruction.UsesRegister(wb.destinationRegister))
         {
             StallDecode();
         }
@@ -49,8 +50,8 @@ public class HazardManager
             return;
 
         // Branch or jump in decode → flush fetch
-        if (decode.CurrentInstruction.Type == InstructionType.Branch ||
-            decode.CurrentInstruction.Type == InstructionType.Jump)
+        if (decode.CurrentInstruction.instructionType == InstructionType.Branch ||
+            decode.CurrentInstruction.instructionType == InstructionType.Jump)
         {
             FlushFetch();
         }
@@ -65,7 +66,7 @@ public class HazardManager
     {
         if (fetch.CurrentInstruction is not null)
         {
-            fetch.CurrentInstruction = new Instruction { IsNop = true, Type = InstructionType.Nop };
+            fetch.CurrentInstruction = DecodingManager.Decode(0b0000000000000000);
         }
     }
 }

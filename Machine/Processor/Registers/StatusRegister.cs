@@ -15,7 +15,7 @@ public class StatusRegister
     public const byte ZERO_FLAG = 0x40;       // Bit 6 - Zero flag
     public const byte SIGN_FLAG = 0x80;       // Bit 7 - Sign flag
 
-    // Flag access properties
+    // Flag access
     public bool CarryFlag => (Flags & CARRY_FLAG) != 0;
     public bool ParityFlag => (Flags & PARITY_FLAG) != 0;
     public bool AuxCarryFlag => (Flags & AUX_CARRY_FLAG) != 0;

@@ -1,4 +1,3 @@
-using System;
 using Machine.Memory.Storage;
 using Machine.Memory.Cache;
 
@@ -26,7 +25,7 @@ public class InstructionMemory
     public ushort ReadInstruction(int address)
     {
         if (address is < 0 or >= memSize)
-            throw new ArgumentException();
+            throw new System.ArgumentException();
 
         int selectedPage = address / cacheSize;
 
@@ -40,7 +39,7 @@ public class InstructionMemory
     public void FlashMemory(ushort[] data)
     {
         if (data.Length != memSize)
-            throw new ArgumentException();
+            throw new System.DataMisalignedException(); 
 
         memory.Flash(data);
 
